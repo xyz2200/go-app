@@ -1,0 +1,20 @@
+# Arquivos binários
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Arquivos de backup
+*~
+*.bak
+*.swp
+
+# Diretórios e arquivos gerados pelo go
+/bin/
+/pkg/
+/vendor/
+*.test
+
+# Configuração local
+.idea/
+.vscode/
