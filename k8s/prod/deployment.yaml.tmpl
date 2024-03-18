@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: totem-api
+  namespace: totem
+  labels:
+    app: totem-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: totem-api
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: totem-api
+    spec:
+      serviceAccountName: aws-iam-serviceaccount # ServiceAccount com Role que permite acesso ao AWS Secrets Manager
+      containers:
+      - name: totem-api
+        image: **REGISTRY_URL/go-app:latest
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: totem-configmap
+        volumeMounts:
+          - name: secrets-store-inline
+            mountPath: "/mnt/secrets-store"
+            readOnly: true
+        env:
+          - name: DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: ecr-secret
+                key: host
+          - name: DB_PORT
+            valueFrom:
+              secretKeyRef:
+                name: ecr-secret
+                key: port
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: ecr-secret
+                key: username
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ecr-secret
+                key: password
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        workingDir: /app
+      restartPolicy: Always
+      volumes:
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: aws-secrets
+      - hostPath:
+          path: /tmp
+          type: Directory
+        name: tmpdir
