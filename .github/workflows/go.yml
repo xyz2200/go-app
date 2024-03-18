@@ -11,9 +11,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  ECR_URL: foo
-
 jobs:
 
   build:
@@ -28,6 +25,7 @@ jobs:
         aws-region: us-east-1
 
     - name: Step name
+      id: get-secrets
       uses: aws-actions/aws-secretsmanager-get-secrets@v1
       with:
         secret-ids: |
@@ -39,7 +37,7 @@ jobs:
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
       env:
-        ECR_REGISTRY: $ECR_URL
+        ECR_REGISTRY: ${{ steps.get-secrets.outputs.ECR_URL }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
