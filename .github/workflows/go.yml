@@ -40,6 +40,9 @@ jobs:
 
     - name: echo
       run: echo $ECR_URL > teste_ecr.txt
+
+    - name: cat
+      run: cat teste_ecr.txt
       
     - name: test
       run: sed s/**REGISTRY_URL/$ECR_URL/ deployment.yaml.tmpl > teste_gh.yaml
