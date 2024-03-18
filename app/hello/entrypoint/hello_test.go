@@ -16,7 +16,7 @@ func TestNewHelloHandler(t *testing.T) {
 	}{
 		{
 			name:   "should return hello json",
-			want:   `{"message":"Hello"}`,
+			want:   `{"message":"Hello","env":"","db_host":"","db_user":"","db_password":"","db_port":""}`,
 			status: http.StatusOK,
 		},
 	}
