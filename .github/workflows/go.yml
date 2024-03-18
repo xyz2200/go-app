@@ -34,9 +34,6 @@ jobs:
 
     - name: echo
       run: echo "Valor de ecr $ECR_URL"
-
-    - name: cat
-      run: cat teste_ecr.txt
     
     - uses: actions/checkout@v3
 
