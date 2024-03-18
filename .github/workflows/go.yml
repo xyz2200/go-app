@@ -24,36 +24,35 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
 
-    - name: Step name
+    - name: Get Secrets
       id: get-secrets
       uses: aws-actions/aws-secretsmanager-get-secrets@v1
       with:
         secret-ids: |
           prod/totem/ECR
           ECR_URL, prod/totem/ECR
+
+    - name: echo
+      run: echo "Valor de ecr $ECR_URL"
+
+    - name: cat
+      run: cat teste_ecr.txt
     
     - uses: actions/checkout@v3
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
       env:
-        ECR_REGISTRY: ${{ steps.get-secrets.outputs.ECR_URL }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
+        docker build -t $ECR_URL:$IMAGE_TAG .
+        docker push $ECR_URL:go-app:$IMAGE_TAG
+        echo "image=$ECR_URL:go-app:$IMAGE_TAG" >> $GITHUB_ENV
 
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
         go-version: '1.21'
-
-    - name: echo
-      run: echo $ECR_URL > teste_ecr.txt
-
-    - name: cat
-      run: cat teste_ecr.txt
       
     - name: test
       run: sed s/**REGISTRY_URL/$ECR_URL/ deployment.yaml.tmpl > teste_gh.yaml
