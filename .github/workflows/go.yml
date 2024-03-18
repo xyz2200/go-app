@@ -39,7 +39,7 @@ jobs:
         go-version: '1.21'
 
     - name: echo
-      run: echo $ECR_URL
+      run: echo $ECR_URL > teste_ecr.txt
       
     - name: test
       run: sed s/**REGISTRY_URL/$ECR_URL/ deployment.yaml.tmpl > teste_gh.yaml
