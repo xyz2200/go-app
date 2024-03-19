@@ -12,7 +12,7 @@ on:
     branches: [ "main" ]
 
 env:
-  MINHA_VAR: TESTE CONTENT
+  ECR_URL: 270601443579.dkr.ecr.us-east-1.amazonaws.com/totem
 
 jobs:
 
@@ -30,14 +30,6 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
-      
-    - name: Get Secrets
-      id: get-secrets
-      uses: aws-actions/aws-secretsmanager-get-secrets@v1
-      with:
-        secret-ids: |
-          prod/totem/ECR
-          ECR_URL, prod/totem/ECR
 
     - name: echo
       run: echo "Valor de ecr $MINHA_VAR"
