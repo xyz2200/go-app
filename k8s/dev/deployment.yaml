@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: totem-api
-        image: andrauss/go-app:latest
+        image: 270601443579.dkr.ecr.us-east-1.amazonaws.com/totem:latest
         imagePullPolicy: Always
         envFrom:
         - configMapRef:
