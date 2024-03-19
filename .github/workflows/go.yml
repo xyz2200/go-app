@@ -48,7 +48,6 @@ jobs:
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
-      needs: login-ecr
       env:
         IMAGE_TAG: ${{ github.sha }}
       run: |
